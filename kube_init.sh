@@ -1,6 +1,6 @@
 #!/bin/bash
 kubeadm init \
---apiserver-advertise-address=192.168.163.100 \
+--apiserver-advertise-address=$1 \
 --kubernetes-version v1.20.15 \
 --service-cidr=10.96.0.0/12 \
 --pod-network-cidr=10.244.0.0/16
