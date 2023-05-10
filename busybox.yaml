@@ -10,7 +10,7 @@ spec:
 --- 
 apiVersion: v1
 kind: Pod
-metatdata: 
+metadata: 
   name: nginx
   labels:
     app: nginx
