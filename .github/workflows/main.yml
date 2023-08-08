@@ -1,0 +1,43 @@
+name: CI_moleyi
+
+on:
+  push:
+    branches:
+    - main
+env:
+  RUNNER_NAME: "runner-name"
+  CLEAR: 0
+jobs:
+  yapf:
+    runs-on: ${{env.RUNNER_NAME}}
+    timeout-minutes: 100 
+    steps:
+      - name: Check code format
+        run: |
+          test -z "$(git diff --name-only --diff-filter=AM HEAD^1 | awk '/.py$/' | xargs -r yapf -d)"
+          test -z "$(git diff --name-only --diff-filter=AM HEAD^1 | awk '/.py$/' | xargs -r python3 -m flake8)"
+        shell: bash
+  test:
+    runs-on: ${{env.RUNNER_NAME}}
+    needs: yapf
+    timeout-minutes: 301 
+    if: ${{ CLEAR != 1 }}
+    steps: 
+      - name: init
+        run: |
+          mkdir test_logs
+          export LC_ALL="en_US.utf8"
+        shell: bash
+      - name: run client file
+        run: python3 ws_client.py
+          
+    
+  clear:
+    runs-on: ${{env.RUNNER_NAME}}
+    if: ${{ CLEAR == 1 }}
+    steps:
+    - name: clear
+      run: python3 clear.py
+      
+
+      
