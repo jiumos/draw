@@ -5,7 +5,7 @@ on:
     branches:
     - main
 env:
-  RUNNER_NAME: "runner-name"
+  RUNNER_NAME: "ubuntu-latest"
   CLEAR: 0
 jobs:
   yapf:
