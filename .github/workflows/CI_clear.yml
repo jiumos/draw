@@ -6,7 +6,5 @@ jobs:
   clear:
     runs-on: ubuntu-latest
     steps:
-    - name: checkout code
-      uses: actions/checkout@v3
     - name: ls
       run: ls
