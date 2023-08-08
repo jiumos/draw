@@ -9,7 +9,7 @@ env:
   CLEAR: 0
 jobs:
   test:
-    runs-on: ${{ RUNNER_NAME }}
+    runs-on: ubuntu-latest
     timeout-minutes: 301 
     if: ${{ CLEAR != 1 }}
     steps: 
