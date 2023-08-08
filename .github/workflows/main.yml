@@ -38,7 +38,7 @@ jobs:
     - name: init
       run: |
         mkdir test_logs
-        echo "LC_ALL='en_US.utf8'" >> $GITHUB_ENV
+        echo "LC_ALL=en_US.utf8" >> $GITHUB_ENV
         echo "PYTEST_XDIST_WORKER_NUMBER=${{ github.event.inputs.PYTEST_XDIST_WORKER_NUMBER }}" >> $GITHUB_ENV
         echo "PYTEST_DF_ENV_NUMBER=${{ github.event.inputs.PYTEST_DF_ENV_NUMBER }}" >> $GITHUB_ENV
       shell: bash
