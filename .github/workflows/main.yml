@@ -5,15 +5,20 @@ on:
     branches:
     - main
 jobs:
-
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 301
     steps:
       - name: init
+        env: 
+          a: env_test
         run: |
           mkdir test_logs
           export LC_ALL="en_US.utf8"
+          echo "LC=${{env.a}}" >> $GITHUB_ENV
         shell: bash
       - name: run 
-        run: "echo ${LCALL}"
+        run: |
+          echo ${LC_ALL}
+          echo ${LC}
+          echo "test"
