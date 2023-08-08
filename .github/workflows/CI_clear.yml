@@ -1,23 +1,14 @@
-name: Environment Variables Example
-
+name: CI_clear
 on:
-  push:
-    branches:
-      - main
-
+  workflow_dispatch:
+    inputs: 
+      para: 
+        description: 'test'
+        default: 'go'
 jobs:
-  build:
+  clear:
     runs-on: ubuntu-latest
-
-    env:
-      MY_VARIABLE: "my_value"
-      ANOTHER_VARIABLE: "another_value"
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Print environment variables
-        run: |
-          echo "MY_VARIABLE: $MY_VARIABLE"
-          echo "ANOTHER_VARIABLE: $ANOTHER_VARIABLE"
+    - name: echo
+      run: |
+        echo $INPUT_PARA
