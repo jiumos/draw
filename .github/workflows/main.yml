@@ -1,6 +1,7 @@
 on:
   push:
-    branches: [ master ]
+    branches:
+    - main
 
 env:
   MAVEN_VERSION: maven:3.8.6-jdk-11
