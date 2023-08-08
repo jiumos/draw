@@ -6,12 +6,11 @@ on:
       - main
 
 env:
-  RUNNER_NAME: ubuntu-latest
   CLEAR: 0
 
 jobs:
   test:
-    runs-on: ${{ env.RUNNER_NAME }}
+    runs-on: ubuntu-latest
     timeout-minutes: 301
     env:
       CLEAR_VALUE: ${{ env.CLEAR }}
