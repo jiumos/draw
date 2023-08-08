@@ -1,17 +1,19 @@
+name: CI_moleyi
+
 on:
   push:
     branches:
     - main
-
-env:
-  MAVEN_VERSION: maven:3.8.6-jdk-11
-  
 jobs:
-  build:
+
+  test:
     runs-on: ubuntu-latest
+    timeout-minutes: 301
     steps:
-    - name: Env Variable
-      run: echo ${{ env.MAVEN_VERSION }}
-
-
-
+      - name: init
+        run: |
+          mkdir test_logs
+          export LC_ALL="en_US.utf8"
+        shell: bash
+      - name: run 
+        run: echo ${LCALL}
