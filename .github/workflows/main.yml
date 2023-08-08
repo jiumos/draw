@@ -3,25 +3,21 @@ name: CI_moleyi
 on:
   push:
     branches:
-    - main
+      - main
+
 env:
   RUNNER_NAME: ubuntu-latest
   CLEAR: 0
+
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ env.RUNNER_NAME }}
     timeout-minutes: 301
     env:
       CLEAR_VALUE: ${{ env.CLEAR }}
-    if: ${{ env.CLEAR_VALUE == 0 }}
-    steps: 
-      - name: init
-        run: |
-          mkdir test_logs
-          export LC_ALL="en_US.utf8"
-        shell: bash
-      - name: run
-        run: echo "$LC_ALL"
-          
+    if: ${{ env.CLEAR_VALUE == '0' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      
+      # Add more steps for your tests or build process here
