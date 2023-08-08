@@ -4,11 +4,34 @@ on:
   push:
     branches:
     - main
-  workflow_dispatch:  # 添加手动触发方式
+  workflow_dispatch:
     inputs:
-      parameter_name:
-        description: 'Description of the parameter'
+      PYTEST_XDIST_WORKER_NUMBER:
+        description: 'Worker number'
         required: true
+      PYTEST_DF_ENV_NUMBER:
+        description: 'deepflow env number'
+        required: true
+      TEST_CASE:
+        description: 'case name or all'
+        required: false
+        default: 'all'
+      DEEPFLOW_SERVER_IMAGE_TAG:
+        description: 'server image tag'
+        required: false
+        default: 'latest'
+      DEEPFLOW_AGENT_IMAGE_TAG:
+        description: 'agent image tag, default :latest'
+        required: false
+        default: 'latest'
+      NO_REPORT:
+        description: 'Report occurred to FeiShu, default 0; no report'
+        required: false
+      DF_ENVS_FIXED:
+        description: 'The test case include server, default 0 '
+        required: false
+  
+        
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -27,3 +50,6 @@ jobs:
           echo ${LC_ALL}
           echo ${LC}
           echo "test"
+
+          
+ 
