@@ -9,7 +9,7 @@ env:
   CLEAR: 0
 jobs:
   yapf:
-    runs-on: ${{env.RUNNER_NAME}}
+    runs-on: ${{ RUNNER_NAME }}
     timeout-minutes: 100 
     steps:
       - name: Check code format
@@ -18,7 +18,7 @@ jobs:
           test -z "$(git diff --name-only --diff-filter=AM HEAD^1 | awk '/.py$/' | xargs -r python3 -m flake8)"
         shell: bash
   test:
-    runs-on: ${{env.RUNNER_NAME}}
+    runs-on: ${{ env.RUNNER_NAME }}
     needs: yapf
     timeout-minutes: 301 
     if: ${{ CLEAR != 1 }}
@@ -33,7 +33,7 @@ jobs:
           
     
   clear:
-    runs-on: ${{env.RUNNER_NAME}}
+    runs-on: ${ {env.RUNNER_NAME }}
     if: ${{ CLEAR == 1 }}
     steps:
     - name: clear
