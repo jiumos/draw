@@ -4,6 +4,11 @@ on:
   push:
     branches:
     - main
+  workflow_dispatch:  # 添加手动触发方式
+    inputs:
+      parameter_name:
+        description: 'Description of the parameter'
+        required: true
 jobs:
   test:
     runs-on: ubuntu-latest
