@@ -16,4 +16,4 @@ jobs:
           export LC_ALL="en_US.utf8"
         shell: bash
       - name: run 
-        run: echo ${LCALL}
+        run: "echo ${LCALL}"
