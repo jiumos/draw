@@ -10,8 +10,8 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 301 
-    if: ${{ CLEAR != 1 }}
+    timeout-minutes: 301
+    if: ${{ $CLEAR != 1 }}
     steps: 
       - name: init
         run: |
