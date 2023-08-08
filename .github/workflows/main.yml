@@ -24,11 +24,11 @@ on:
       NO_REPORT:
         description: 'Report occurred to FeiShu, 1 means not report'
         required: false
-        default: 0
+        default: '0'
       DF_ENVS_FIXED:
         description: 'The test case include server, 1 means no server required'
         required: false
-        default: 0
+        default: '0'
 
 jobs:
   test:
@@ -45,4 +45,5 @@ jobs:
     - name: run client file
       run: |
         echo ${PYTEST_DF_ENV_NUMBER}
+        echo $LC_ALL
           
