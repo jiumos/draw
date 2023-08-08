@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 301
     env:
-      CLEAR_VALUE: ${{ env.CLEAR }}
+      CLEAR_VALUE: ${{ CLEAR }}
     if: ${{ env.CLEAR_VALUE == '0' }}
     steps:
       - name: Checkout code
