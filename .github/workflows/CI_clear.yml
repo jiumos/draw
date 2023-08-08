@@ -1,0 +1,10 @@
+name: CI_clear
+on:
+  workflow_dispatch:
+
+jobs:
+  clear:
+    runs-on: ubuntu-latest
+    steps:
+    - name: clear
+      run: python3 clear.py
