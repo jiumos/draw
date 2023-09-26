@@ -54,15 +54,15 @@ jobs:
       
     - name: Check Server And Agent Image
       run: |
-        server_tag = "${{ github.event.inputs.DEEPFLOW_SERVER_IMAGE_TAG }}"
-        server=$(skopeo inspect docker://registry.cn-beijing.aliyuncs.com/deepflow-ce/deepflow-agent:${server_tag} 2>&1 | grep "Error parsing image name")
+        server_tag="${{ github.event.inputs.DEEPFLOW_SERVER_IMAGE_TAG }}"
+        server=$(skopeo inspect docker://registry.cn-beijing.aliyuncs.com/deepflow-ce/deepflow-agent:${server_tag} 2>&1 | grep "Error parsing image name" || :)
         if [ -n "$server" ]; then
           echo "Get Server Image Failed: "
           echo "$server"
           exit 1
         fi
-        agent_tag = "${{ github.event.inputs.DEEPFLOW_AGENT_IMAGE_TAG }}"
-        agent=$(skopeo inspect docker://registry.cn-beijing.aliyuncs.com/deepflow-ce/deepflow-agent:${agent_tag} 2>&1 | grep "Error parsing image name")
+        agent_tag="${{ github.event.inputs.DEEPFLOW_AGENT_IMAGE_TAG }}"
+        agent=$(skopeo inspect docker://registry.cn-beijing.aliyuncs.com/deepflow-ce/deepflow-agent:${agent_tag} 2>&1 | grep "Error parsing image name" || :)
         if [ -n "$agent" ]; then
           echo "Get Agent Image Failed: "
           echo "$agent"

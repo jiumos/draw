@@ -122,8 +122,8 @@ if __name__ == '__main__':
             params[opt_name.upper().replace("--", "")] = opt_values
     url = os.environ.get("AUTOMATION_TEST_PUBLIC_URL", "")
     token = os.environ.get("AUTOMATION_TEST_TOKEN", "")
-    if not url or not token:
-        sys.exit(1)
+    #if not url or not token:
+    #    sys.exit(1)
     if not params.get("UUID"):
         params["UUID"] = UUID
     for key in keys:
@@ -136,5 +136,7 @@ if __name__ == '__main__':
                 params[key] = params_default[key]
     print(params)
     params["AUTOMATION_TEST_TOKEN"] = token
-    sio.connect(f'ws://{url}',  wait_timeout = 10)
-    sio.wait()
+    check_variables(params)
+    print(params)
+    #sio.connect(f'ws://{url}',  wait_timeout = 10)
+    #sio.wait()

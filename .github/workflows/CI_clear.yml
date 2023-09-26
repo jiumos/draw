@@ -1,4 +1,4 @@
-name: automation_test
+name: automation-test
 
 on:
   workflow_dispatch:
@@ -20,17 +20,17 @@ on:
         required: false
         default: '1'
       TEST_CASE:
-        description: 'case name'
+        description: 'case name, support [basic, querier, cloud_k8s, cloud_workloadv, upgrade]'
         required: false
         default: 'basic'
       DF_TEST_BRANCH:
-          description: 'df-test branch'
-          required: false
-          default: 'master'
+        description: 'df-test branch'
+        required: false
+        default: 'master'
       DEBUG:
-          description: 'reserve case environment, 1 means reserve'
-          required: false
-          default: '0'
+        description: 'reserve case environment at end of the use case, 1 means reserve'
+        required: false
+        default: '0'
 
 jobs:
   test:
@@ -51,9 +51,27 @@ jobs:
           echo "Parameter exceeds the maximum value of $env_max_value."
           exit 1
         fi
+      
+    - name: Check Server And Agent Image
+      run: |
+        server_tag="${{ github.event.inputs.DEEPFLOW_SERVER_IMAGE_TAG }}"
+        server=$(skopeo inspect docker://registry.cn-beijing.aliyuncs.com/deepflow-ce/deepflow-agent:${server_tag} 2>&1 | grep "Error parsing image name")
+        if [ -n "$server" ]; then
+          echo "Get Server Image Failed: "
+          echo "$server"
+          exit 1
+        fi
+        agent_tag="${{ github.event.inputs.DEEPFLOW_AGENT_IMAGE_TAG }}"
+        agent=$(skopeo inspect docker://registry.cn-beijing.aliyuncs.com/deepflow-ce/deepflow-agent:${agent_tag} 2>&1 | grep "Error parsing image name")
+        if [ -n "$agent" ]; then
+          echo "Get Agent Image Failed: "
+          echo "$agent"
+          exit 1
+        fi
+
     - name: Checkout code
       uses: actions/checkout@v3
-      
+
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
@@ -78,11 +96,8 @@ jobs:
         echo "AUTOMATION_TEST_TOKEN=${{ secrets.AUTOMATION_TEST_TOKEN }}" >> $GITHUB_ENV
         echo "AUTOMATION_TEST_PUBLIC_URL=${{ secrets.AUTOMATION_TEST_PUBLIC_URL }}" >> $GITHUB_ENV
 
-    - name: Setup Debug Session
-      uses: csexton/debugger-action@master
+    # - name: Setup Debug Session
+    #   uses: csexton/debugger-action@master
     - name: run client
-      # run: python3 automation_test/ws_client.py
-      run: |
-        echo $AUTOMATION_TEST_PUBLIC_URL
-
+      run: python3 automation_test/ws_client_luyao.py
   
