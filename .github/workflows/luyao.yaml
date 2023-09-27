@@ -20,7 +20,9 @@ on:
         required: false
         default: '1'
       TEST_CASE:
-        description: 'case name, support [basic, querier, cloud_k8s, cloud_workloadv, upgrade]'
+        description: |
+          'case name, support 
+          [basic, querier, cloud_k8s, cloud_workloadv, upgrade]
         required: false
         default: 'basic'
       DF_TEST_BRANCH:
@@ -99,5 +101,7 @@ jobs:
     # - name: Setup Debug Session
     #   uses: csexton/debugger-action@master
     - name: run client
-      run: python3 automation_test/ws_client_luyao.py
+      run: |
+        export PYTHONUNBUFFERED=1
+        python3 automation_test/ws_client_luyao.py
   

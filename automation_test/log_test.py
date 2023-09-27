@@ -1,4 +1,9 @@
 import time
-for i in range(100):
-    print(f"tets{i*3}")
+
+for i in range(10):
+
+    print(f"test{i*3}")
     time.sleep(3)
+
+
+

@@ -26,5 +26,7 @@ jobs:
     # - name: Setup Debug Session
     #   uses: csexton/debugger-action@master
     - name: run client
-      run: python3 automation_test/log_test.py
+      run: |
+        export PYTHONUNBUFFERED=1
+        python3 automation_test/log_test.py
   
