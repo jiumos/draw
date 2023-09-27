@@ -1,49 +1,30 @@
-name: CI_moleyi
+name: test
 
 on:
-  workflow_dispatch:
-    inputs:
-      PYTEST_XDIST_WORKER_NUMBER:
-        description: 'Worker number, recommend 3-6'
-        required: true
-      PYTEST_DF_ENV_NUMBER:
-        description: 'Deepflow env number, recommend 1-3'
-        required: true
-      TEST_CASE:
-        description: 'case name'
-        required: false
-        default: 'all'
-      DEEPFLOW_SERVER_IMAGE_TAG:
-        description: 'server image tag'
-        required: false
-        default: 'latest'
-      DEEPFLOW_AGENT_IMAGE_TAG:
-        description: 'agent image tag'
-        required: false
-        default: 'latest'
-      NO_REPORT:
-        description: 'Report occurred to FeiShu, 1 means not report'
-        required: false
-        default: '0'
-      DF_ENVS_FIXED:
-        description: 'The test case include server, 1 means no server required'
-        required: false
-        default: '0'
+  push:
+    branches: 
+      - 'main'
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 301
     steps:
-    - name: init
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.8
+    - name: Install Pip
       run: |
-        mkdir test_logs
-        echo "LC_ALL=en_US.utf8" >> $GITHUB_ENV
-        echo "PYTEST_XDIST_WORKER_NUMBER=${{ github.event.inputs.PYTEST_XDIST_WORKER_NUMBER }}" >> $GITHUB_ENV
-        echo "PYTEST_DF_ENV_NUMBER=${{ github.event.inputs.PYTEST_DF_ENV_NUMBER }}" >> $GITHUB_ENV
-      shell: bash
-    - name: run client file
+        python -m ensurepip --default-pip
+        python -m pip install --upgrade pip
+    - name: Install Sio
       run: |
-        echo ${PYTEST_DF_ENV_NUMBER}
-        echo $LC_ALL
-          
+        pip install -r automation_test/requirements.txt
+    # - name: Setup Debug Session
+    #   uses: csexton/debugger-action@master
+    - name: run client
+      run: python3 automation_test/log_test.py
+  
