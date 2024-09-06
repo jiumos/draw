@@ -6,5 +6,5 @@ import (
 )
 
 func Main_test() {
-    fmt.Println(reverse.String("Hello"))
+    fmt.Println(reverse.String("Hello v0.1.4"))
 }
