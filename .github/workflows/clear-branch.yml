@@ -1,0 +1,50 @@
+name: Clear Branch
+
+on:
+  push:
+    branches:
+      - ci-test
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Why trigger?"
+        required: true 
+        type: string
+jobs:
+  clear_branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: List all branches
+        run: |
+          git fetch --prune
+          current_branch=$(git rev-parse --abbrev-ref HEAD)
+          protected_branches=$(gh api /repos/${{ github.repository }}/branches --jq '.[] | select(.protected == true) | .name' | tr '\n' ' ')
+          protected_branches=""
+          for branch in $(git branch -r | sed 's/origin\///'|grep -v origin); do
+            if [[ " ${protected_branches[@]} " =~ " ${branch} " ]]; then
+                echo "Skipping protected branch: $branch"
+                continue
+            fi
+            if [[ "$branch" == "$current_branch" ]]; then
+                echo "Skipping current branch: $branch"
+                continue
+            fi
+            last_commit_date=$(git log -1 --format=%ci origin/$branch)
+            # Skip branches with submitted PR
+            if [[ $(date -d "$last_commit_date" +%s) -lt $(date -d "1 month ago" +%s) ]]; then
+              if ! gh pr list --head $branch --repo https://github.com//${{ github.repository }} | grep $branch; then
+                echo "Deleting branch: $branch"
+                git push origin --delete $branch
+              fi
+            fi
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
