@@ -27,7 +27,6 @@ jobs:
           git fetch --prune
           current_branch=$(git rev-parse --abbrev-ref HEAD)
           protected_branches=$(gh api /repos/${{ github.repository }}/branches --jq '.[] | select(.protected == true) | .name' | tr '\n' ' ')
-          protected_branches=""
           for branch in $(git branch -r | sed 's/origin\///'|grep -v origin); do
             if [[ " ${protected_branches[@]} " =~ " ${branch} " ]]; then
                 echo "Skipping protected branch: $branch"
