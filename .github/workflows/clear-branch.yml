@@ -1,9 +1,11 @@
 name: Clear Branch
 
 on:
+  schedule:
+    - cron: '0 8 * * *' # Runs every day at 0:00 Beijing Time (8:00 UTC)
   push:
     branches:
-      - ci-test
+      - test
   workflow_dispatch:
     inputs:
       ref:
@@ -13,6 +15,11 @@ on:
 jobs:
   clear_branch:
     runs-on: ubuntu-latest
+    env:
+      SKIP_PATTERNS: |
+        v7.*
+        v6.*
+        v5.*
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -22,12 +29,28 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      - name: List all branches
+      - name: Delete invalid branches
         run: |
           git fetch --prune
           current_branch=$(git rev-parse --abbrev-ref HEAD)
-          protected_branches=$(gh api /repos/${{ github.repository }}/branches --jq '.[] | select(.protected == true) | .name' | tr '\n' ' ')
+          protected_branches=$(gh api /repos/${{ github.repository }}/branches --paginate --jq '.[] | select(.protected == true) | .name' | tr '\n' ' ')
+          echo "All protected branch: ${protected_branches}"
           for branch in $(git branch -r | sed 's/origin\///'|grep -v origin); do
+            skip_branch=false
+            # Check if the branch matches any of the skip patterns
+            for pattern in $SKIP_PATTERNS; do
+                echo "pat : ${pattern}"
+                if [[ $branch =~ $pattern ]]; then
+                    echo "Skipping branch matching pattern: $branch"
+                    skip_branch=true
+                    break
+                fi
+            done
+
+            if $skip_branch; then
+                continue
+            fi
+            
             if [[ " ${protected_branches[@]} " =~ " ${branch} " ]]; then
                 echo "Skipping protected branch: $branch"
                 continue
@@ -36,14 +59,17 @@ jobs:
                 echo "Skipping current branch: $branch"
                 continue
             fi
-            last_commit_date=$(git log -1 --format=%ci origin/$branch)
             # Skip branches with submitted PR
-            if [[ $(date -d "$last_commit_date" +%s) -lt $(date -d "1 month ago" +%s) ]]; then
-              if ! gh pr list --head $branch --repo https://github.com//${{ github.repository }} | grep $branch; then
-                echo "Deleting branch: $branch"
-                git push origin --delete $branch
-              fi
+            if gh pr list --head $branch --repo https://github.com//${{ github.repository }} | grep $branch; then
+                echo "Skipping branch with submitted PR: $branch"
+                continue
             fi
+            last_commit_date=$(git log -1 --format=%ci origin/$branch)
+            if [[ $(date -d "$last_commit_date" +%s) -lt $(date -d "10 seconds ago" +%s) ]]; then
+              echo "Deleting branch: $branch"
+              git push origin --delete $branch
+            fi
+
           done
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
